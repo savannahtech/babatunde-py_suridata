@@ -1,86 +1,14 @@
+import unittest
 import random
+from main import dwarf_giant, listify, remove_duplicates_by_all_values
 
-
-employees = [
-	{
-		"department": "R&D",
-		"name": "emp1",
-		"age": 46
-	},
-	{
-		"department": "Sales",
-		"name": "emp2",
-		"age": 28
-	},
-	{
-		"department": "R&D",
-		"name": "emp3",
-		"age": 33
-	},
-	{
-		"department": "R&D",
-		"name": "emp4",
-		"age": 29
-	}
-				]
-
-
-def remove_duplicates_by_all_values(employees):
+class TestCreateDwarfGiantPairs(unittest.TestCase):
     """
-    removes all dulicated employees values
+    Test cases for create_dwarf_giant_pairs function.
     """
-    seen = set()
-    unique_dicts = []
-    for d in employees:
-        key = tuple(d.values())  # Combine all values as a key
-        if key not in seen:
-            unique_dicts.append(d)
-            seen.add(key)
-    return unique_dicts
 
-
-def listify(employees):
-    """
-    Extracts all employee names into a list
-    
-    """
-    outer_list = []
-    for j in range(len(employees)):
-        
-        outer_list.append(employees[j]["name"])
-    return outer_list
-
-
-def dwarf_giant(outer_list):
-    """
-    Creates a unique list of tuples that satisfies all
-    constraints
-    """
-      
-    pair =[]
-    count = len(outer_list)
-    for i in range(len(outer_list)-1):
-                tup = (outer_list[i], outer_list[i+1])
-                pair.append(tup)
-                i+=1
-    pair.append((outer_list[-1], outer_list[0]))
-    return pair
-
-     
-
-if __name__=="__main__":
-
-    employees = remove_duplicates_by_all_values(employees)
-    outer_list =listify(employees) 
-    random.shuffle(outer_list) 
-    pairs = dwarf_giant(outer_list)
-    print(pairs)
-    
-
-import random
-
-
-employees = [
+    def test_pairs(self):
+        employees = [
 	{
 		"department": "R&D",
 		"name": "Nikolas Porter",
@@ -618,58 +546,19 @@ employees = [
 	}
 ]
 
-
-def remove_duplicates_by_all_values(employees):
-    seen = set()
-    unique_dicts = []
-    for d in employees:
-        key = tuple(d.values())  # Combine all values as a key
-        if key not in seen:
-            unique_dicts.append(d)
-            seen.add(key)
-    return unique_dicts
-
-
-
-
-
-
-
-def listify(employees):
-    outer_list = []
-    for j in range(len(employees)):
+#output: [(emp2, emp4), (emp4, emp1), (emp1, emp3), (emp3, emp2)]
+        employees = remove_duplicates_by_all_values(employees)
+        outer_list =listify(employees) 
         
-        outer_list.append(employees[j]["name"])
-    return outer_list
+        random.shuffle(outer_list)
+        pairs = dwarf_giant(outer_list)
 
+        self.assertEqual(len(pairs), len(employees))  # Correct number of pairs
+        self.assertEqual(len(set(pair for pair in pairs)), len(employees))  # Unique pairs
+        self.assertTrue(all(employee["name"] in [pair[0] for pair in pairs] for employee in employees))  # All employees included
+        self.assertTrue(all(employee["name"] in [pair[1] for pair in pairs] for employee in employees))  # All employees included
+        self.assertFalse(any((pair[1], pair[0]) in pairs for pair in pairs))  # No reverse pairs
 
-
-
-
-
-def dwarf_giant(outer_list):
-      
-    pair =[]
-    count = len(outer_list)
-    for i in range(len(outer_list)-1):
-                tup = (outer_list[i], outer_list[i+1])
-                pair.append(tup)
-                i+=1
-    pair.append((outer_list[-1], outer_list[0]))
-    random.shuffle(pair)
-    return pair
-
-
-if __name__=="__main__":
-
-    employees = remove_duplicates_by_all_values(employees)
-    outer_list =listify(employees) 
-    random.shuffle(outer_list) 
-    pairs = dwarf_giant(outer_list)
+if __name__ == "__main__":
     
-
-
-
-
-
-
+    unittest.main()
